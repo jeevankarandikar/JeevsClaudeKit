@@ -1,0 +1,75 @@
+{
+  "hooks": [
+    {
+      "matcher": {
+        "tool_name": "Bash",
+        "input_contains_any": [
+          "rm -rf /",
+          "rm -rf ~",
+          "rm -rf .",
+          "git reset --hard",
+          "git push --force",
+          "git push -f",
+          "git clean -fd",
+          "git checkout -- .",
+          "drop table",
+          "DROP TABLE",
+          "truncate table",
+          "TRUNCATE TABLE",
+          "> /dev/sda",
+          "mkfs.",
+          "dd if=",
+          ":(){:|:&};:",
+          "chmod -R 777",
+          "git branch -D main",
+          "git branch -D master"
+        ]
+      },
+      "hooks": [
+        {
+          "type": "preToolUse",
+          "command": "echo 'DESTRUCTIVE COMMAND DETECTED: This command could cause irreversible damage. Please confirm you want to proceed.' >&2; exit 2"
+        }
+      ]
+    },
+    {
+      "matcher": {
+        "tool_name": "Edit",
+        "input_contains_any": [
+          ".env",
+          "credentials",
+          "secret",
+          "password",
+          "api_key",
+          "API_KEY",
+          "private_key",
+          "token"
+        ]
+      },
+      "hooks": [
+        {
+          "type": "preToolUse",
+          "command": "echo 'SENSITIVE FILE WARNING: You are editing a file that may contain secrets or credentials. Ensure no sensitive values are hardcoded.' >&2; exit 0"
+        }
+      ]
+    },
+    {
+      "matcher": {
+        "tool_name": "Bash",
+        "input_contains_any": [
+          "Co-Authored-By",
+          "co-authored-by",
+          "CO-AUTHORED-BY",
+          "Signed-off-by",
+          "signed-off-by"
+        ]
+      },
+      "hooks": [
+        {
+          "type": "preToolUse",
+          "command": "echo 'BLOCKED: Do not add Co-Authored-By or Signed-off-by trailers to commits. Remove the trailer and retry.' >&2; exit 2"
+        }
+      ]
+    }
+  ]
+}

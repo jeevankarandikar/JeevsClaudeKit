@@ -1,0 +1,54 @@
+# CLAUDE.md
+
+## Project Context
+- **Name**: [project name]
+- **Stack**: [languages, frameworks, databases, key libraries]
+- **Package Manager**: [npm/yarn/pnpm/cargo/pip/etc]
+- **Node/Runtime Version**: [if applicable]
+
+## Key Commands
+- **Build**: `[command]`
+- **Test**: `[command]`
+- **Lint**: `[command]`
+- **Dev Server**: `[command]`
+- **Type Check**: `[command]`
+
+## Architecture
+- [Brief project description - 1-2 sentences]
+- [Key directories and their purpose]
+- [Entry point(s)]
+- [Database/ORM if applicable]
+
+## Conventions
+
+### Commits
+- lowercase only, no capital letters anywhere
+- concise: one short sentence, under 72 characters
+- no emoji, no conventional commit prefixes (`feat:`, `fix:`, etc.)
+- no trailers: never add `Co-Authored-By`, `Signed-off-by`, or any trailer lines
+- granular: one logical change per commit
+
+### Code Style
+- [Naming: camelCase/snake_case/PascalCase and where each is used]
+- [Import ordering convention]
+- [Error handling patterns]
+- [Testing patterns and frameworks]
+
+### Comments & Documentation
+- explain why, not what
+- CLAUDE.md is the single source of truth for project context
+- do not create unnecessary .md files or READMEs unless requested
+
+## Recent Changes
+<!-- Updated by /update-memory after each session -->
+
+## Known Issues
+<!-- Track bugs, tech debt, and quirks here -->
+
+## TODO
+<!-- Active task list, updated per session -->
+
+## Gotchas
+<!-- Non-obvious things that have caused confusion or bugs -->
+<!-- Things that look wrong but are intentional -->
+<!-- Environment-specific behaviors -->
