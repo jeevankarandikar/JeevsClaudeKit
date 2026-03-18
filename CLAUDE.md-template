@@ -39,6 +39,76 @@
 - CLAUDE.md is the single source of truth for project context
 - do not create unnecessary .md files or READMEs unless requested
 
+### Diagrams
+- ASCII diagrams for non-trivial data flows, state machines, and dependency graphs
+- Place in code comments near the code they describe
+- Update diagrams when modifying code they describe — stale diagrams are worse than none
+
+### Error Handling
+- Name specific exceptions/error types, never catch generic "Error"
+- Every rescued error must: retry with backoff, degrade gracefully, or re-raise with context
+- "Swallow and continue" is almost never acceptable
+
+## Agent & Skill Routing
+
+When the user's intent matches a pattern below, use the specified agents and skills automatically. Do NOT wait for a slash command — route based on what the user is asking for.
+
+### Planning & Scoping
+- "plan", "design", "architect", "how should we build" → invoke `superpowers:writing-plans` skill, then dispatch `feature-dev:code-architect` + ECC `architect` agents
+- "should we even", "is this worth", "scope", "challenge this", "do we need" → invoke `superpowers:brainstorming` skill, dispatch ECC `planner` agent
+- "what could go wrong", "devil's advocate", "risks", "what if this breaks" → dispatch `pr-review-toolkit:silent-failure-hunter` + ECC `security-reviewer` agents in parallel
+
+### Code Review & Quality
+- "review", "look over", "check this", "is this good" → dispatch in parallel: `pr-review-toolkit:code-reviewer`, `pr-review-toolkit:silent-failure-hunter`, `pr-review-toolkit:comment-analyzer`, ECC `code-reviewer`
+- "review the PR", "PR review", "check the pull request" → invoke `pr-review-toolkit:review-pr` skill (runs 6 parallel agents)
+- "security", "vulnerabilities", "audit", "is this secure" → dispatch ECC `security-reviewer` + `pr-review-toolkit:silent-failure-hunter` agents in parallel
+- "test coverage", "are tests enough", "missing tests" → dispatch `pr-review-toolkit:pr-test-analyzer` agent
+- "types", "type design", "type safety" → dispatch `pr-review-toolkit:type-design-analyzer` agent
+- "database", "queries", "schema", "migration" → dispatch ECC `database-reviewer` agent
+
+### Building & Fixing
+- "build is broken", "build errors", "won't compile", "fix the build" → dispatch ECC `build-error-resolver` agent (or language-specific: `cpp-build-resolver`, `go-build-resolver`, `java-build-resolver`, `rust-build-resolver`)
+- "TDD", "test first", "write tests then code" → invoke `superpowers:test-driven-development` skill, dispatch ECC `tdd-guide` agent
+- "bug", "broken", "not working", "failing" → invoke `superpowers:systematic-debugging` skill
+- "refactor", "clean up", "dead code", "unused" → dispatch `code-simplifier:code-simplifier` + ECC `refactor-cleaner` agents
+- "e2e", "end to end", "integration test" → dispatch ECC `e2e-runner` agent
+
+### Shipping
+- "commit", "push", "PR", "ship it", "merge" → invoke `superpowers:verification-before-completion` skill first, then commit
+- "verify", "check everything", "ready to ship?" → run build → types → lint → tests → console audit in sequence
+
+### Design & Frontend
+- "design system", "colors", "typography", "visual style" → invoke `frontend-design:frontend-design` skill
+- "looks wrong", "visual bug", "design review", "UI review" → use Playwright for screenshots, check against DESIGN.md
+- "QA", "test the site", "check the pages", "browser test" → use Playwright for systematic page-by-page testing
+
+### Understanding & Exploring
+- "explain", "how does this work", "walk me through" → dispatch `feature-dev:code-explorer` agent
+- "find", "where is", "search for" → dispatch Explore agent
+- "docs", "update documentation" → dispatch ECC `doc-updater` agent
+
+### Research & Experimentation
+- "experiment", "try different approaches", "optimize", "iterate", "research" → use experiment loop: modify → run → measure → keep/discard → repeat. Track results in a table. Always establish a baseline first.
+- "benchmark", "compare approaches", "which is faster" → run each variant, measure, record in results table, keep the winner
+
+### Session Management
+- "what did we learn", "capture this", "remember this" → extract patterns into CLAUDE.md or memory system
+- "side question", "quick question", "unrelated but" → pause main task, answer briefly, resume with context summary
+- "checkpoint", "save progress", "snapshot" → commit current state with checkpoint prefix
+
+### Language-Specific Review
+ECC provides language-specific reviewers that activate automatically based on file types:
+- Python files → ECC `python-reviewer`
+- Go files → ECC `go-reviewer`
+- Rust files → ECC `rust-reviewer`
+- C++ files → ECC `cpp-reviewer`
+- Java files → ECC `java-reviewer`
+- Kotlin files → ECC `kotlin-reviewer`
+
+## Design System
+<!-- Read DESIGN.md before making visual/UI decisions -->
+<!-- Created by /design-system, reviewed by /design-review -->
+
 ## Recent Changes
 <!-- Updated by /update-memory after each session -->
 

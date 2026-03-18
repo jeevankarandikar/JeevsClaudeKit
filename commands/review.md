@@ -1,48 +1,67 @@
 Comprehensive code review for: $ARGUMENTS
 
-Review the specified code/PR thoroughly across these dimensions:
+## Agents & Skills
+Dispatch these agents in parallel for maximum coverage:
+- `pr-review-toolkit:code-reviewer` — code quality, style, patterns
+- `pr-review-toolkit:silent-failure-hunter` — error handling gaps, silent failures
+- `pr-review-toolkit:pr-test-analyzer` — test coverage gaps
+- `pr-review-toolkit:comment-analyzer` — comment accuracy
+If the diff touches types/interfaces, also dispatch `pr-review-toolkit:type-design-analyzer`.
+Synthesize all agent results into the output format below.
 
-## 1. Code Quality
-- Naming clarity (functions, variables, classes)
-- Cyclomatic and cognitive complexity
-- DRY violations
-- Dead code or unused imports
-- Consistent patterns with rest of codebase
+## Step 0: Context Gathering
+1. Detect base branch:
+   - `gh pr view --json baseRefName -q .baseRefName` (if PR exists)
+   - `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (repo default)
+   - fall back to `main`
+2. `git fetch origin <base> --quiet && git diff origin/<base> --stat`
+3. If no diff: say so and stop.
+4. `git log --oneline -20` for recent context
+5. Scan changed files for TODO/FIXME/HACK comments
 
-## 2. Correctness & Robustness
-- Error handling completeness
-- Input validation at system boundaries
-- Edge cases (null, empty, extreme values, concurrent access)
-- Race conditions or async pitfalls
-- Off-by-one errors, boundary conditions
+## Pass 1: Critical (must fix before merge)
 
-## 3. Testing
-- Test coverage for new/changed code
-- Missing test scenarios
-- Test quality (do they actually verify behavior?)
-- Integration vs unit test balance
+### SQL & Data Safety
+- String interpolation in queries, TOCTOU races, missing validations
 
-## 4. Security (OWASP Top 10)
-- Input sanitization
-- Authentication/authorization checks
-- Sensitive data exposure
-- SQL injection, XSS, command injection
-- Insecure dependencies
+### Race Conditions
+- Check-then-set without atomics, missing unique constraints, concurrent status transitions
 
-## 5. Performance
-- Obvious bottlenecks (N+1 queries, unnecessary loops)
-- Database query efficiency
-- Memory leaks or unbounded growth
-- Async/await correctness
+### Input Trust Boundaries
+- Unsanitized user input, LLM output written to DB without validation
 
-## 6. Documentation
-- Public API docs present
-- Complex logic explained
-- README updates if needed
+### Error Handling
+Build an Error & Rescue Map for new codepaths:
+METHOD | FAILURE MODE | RESCUED? | TEST? | USER SEES? | LOGGED?
+Any row with RESCUED=N + TEST=N + USER SEES=Silent → CRITICAL GAP
+
+### Security
+- Auth/authz checks, injection vectors, sensitive data exposure
+
+## Pass 2: Informational (include in review, not blocking)
+
+### Code Quality
+- Naming clarity, DRY violations, dead code, pattern consistency with codebase
+
+### Testing
+- Coverage gaps, test quality, missing negative-path tests
+
+### Performance
+- N+1 queries, unbounded growth, missing indexes
+
+### Documentation
+- Public API docs, complex logic explanation
+
+### Enum/Value Completeness
+- New enum values traced through all consumers
+
+### Conditional Side Effects
+- Branches that forget side effects on one path
 
 ## Output Format
-Summarize findings as a structured list:
-- **Critical**: Must fix before merge
-- **Warning**: Should fix, not blocking
-- **Suggestion**: Nice to have improvements
-- **Positive**: Things done well (acknowledge good work)
+1. Summary: `Review: N issues (X critical, Y informational)`
+2. For each CRITICAL: file:line, problem, recommended fix — mark as must-fix
+3. For each informational: file:line, problem, suggested fix
+4. Failure Modes Registry (if new codepaths):
+   CODEPATH | FAILURE MODE | RESCUED? | TEST? | USER SEES? | LOGGED?
+5. Positive: things done well (acknowledge good work)

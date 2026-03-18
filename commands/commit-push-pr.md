@@ -1,5 +1,20 @@
 Commit current changes, push to remote, and create a pull request.
 
+## Agents & Skills
+- Invoke `superpowers:verification-before-completion` skill before committing — run all checks first
+- During Quick Pre-Landing Scan, dispatch `pr-review-toolkit:silent-failure-hunter` agent on the diff
+
+## Pre-Flight
+1. If on main/master: STOP — "ship from a feature branch"
+2. Detect base branch:
+   - `gh pr view --json baseRefName -q .baseRefName` (if PR exists)
+   - `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (repo default)
+   - fall back to `main`
+3. `git fetch origin <base> && git merge origin/<base> --no-edit`
+   - If merge conflicts: STOP and show them
+4. If a test command is documented in CLAUDE.md: run it
+   - If tests fail: STOP and show failures
+
 ## Commit Message Rules
 
 Follow these rules exactly:
@@ -37,6 +52,15 @@ Follow these rules exactly:
    ```
    git push -u origin HEAD
    ```
+
+## Quick Pre-Landing Scan
+Before pushing, scan `git diff origin/<base>` for:
+- String interpolation in SQL queries
+- New TODO/FIXME added in this diff
+- Hardcoded credentials, API keys, tokens
+- Console.log / debugger / binding.pry left in
+Warn before pushing if any found.
+
 7. Create PR using `gh pr create`:
    ```
    gh pr create --title "lowercase pr title" --body "$(cat <<'EOF'

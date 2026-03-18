@@ -70,6 +70,35 @@
           "command": "echo 'BLOCKED: Do not add Co-Authored-By or Signed-off-by trailers to commits. Remove the trailer and retry.' >&2; exit 2"
         }
       ]
+    },
+    {
+      "matcher": {
+        "tool_name": "Stop"
+      },
+      "hooks": [
+        {
+          "type": "stop",
+          "command": "echo 'Session ending. Consider running /update-memory or /learn to capture insights from this session.' >&2; exit 0"
+        }
+      ]
+    },
+    {
+      "matcher": {
+        "tool_name": "Edit",
+        "input_contains_any": [
+          "console.log",
+          "debugger",
+          "binding.pry",
+          "print(",
+          "puts "
+        ]
+      },
+      "hooks": [
+        {
+          "type": "postToolUse",
+          "command": "echo 'DEBUG STATEMENT WARNING: File contains debug output. Remove before committing.' >&2; exit 0"
+        }
+      ]
     }
   ]
 }

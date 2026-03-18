@@ -1,5 +1,9 @@
 Performance analysis for: $ARGUMENTS
 
+## Agents & Skills
+- Dispatch `feature-dev:code-explorer` agent to trace hot paths and data flow through the codebase
+- Dispatch `pr-review-toolkit:code-reviewer` agent focused on performance patterns
+
 Analyze the specified code for performance issues:
 
 ## 1. Time Complexity

@@ -20,7 +20,7 @@
     "pr-review-toolkit@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
-    "playwright@claude-plugins-official": false,
+    "playwright@claude-plugins-official": true,
     "serena@claude-plugins-official": false,
     "supabase@claude-plugins-official": false,
     "greptile@claude-plugins-official": false,
