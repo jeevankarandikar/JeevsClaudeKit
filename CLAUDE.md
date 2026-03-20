@@ -7,7 +7,7 @@
 - **Location**: ~/Documents/JeevsClaudeKit
 
 ## Key Paths
-- **Commands**: `~/.claude/commands/*.md` (25 commands)
+- **Commands**: `~/.claude/commands/*.md` (19 commands)
 - **Hooks**: `~/.claude/hooks/hooks.json` (5 hooks)
 - **Settings**: `~/.claude/settings.json` (16 official plugins + ECC via community marketplace)
 - **Template**: `~/.claude/CLAUDE.md-template`
@@ -116,6 +116,7 @@ This is a living reference document. When you want to:
 - **Change plugin config**: Edit `~/.claude/settings.json`
 
 ## Recent Changes
+- 2026-03-20: slimmed commands from 25 to 19 — removed 6 thin wrappers (fast, design-system, design-review, perf, review), merged devils-advocate + scope-challenge → challenge, merged update-memory + learn → save, added journal, renamed 7 commands for clarity
 - 2026-03-18: merged gstack + everything-claude-code + autoresearch patterns — 12 new commands, enhanced 4 existing, 2 new hooks, ECC agents wired into routing table, playwright + ECC plugins enabled
 - 2026-03-15: Added commit/documentation conventions, custom `/commit` and `/commit-push-pr` commands, Co-Authored-By blocking hook
 - 2026-03-08: Initial setup - 10 commands, 2 hooks, 10 plugins enabled

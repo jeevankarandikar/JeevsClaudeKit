@@ -1,4 +1,4 @@
-Commit current changes, push to remote, and create a pull request.
+Commit, push, and open a pull request.
 
 ## Agents & Skills
 - Invoke `superpowers:verification-before-completion` skill before committing — run all checks first

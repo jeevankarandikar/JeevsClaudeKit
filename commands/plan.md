@@ -1,4 +1,4 @@
-Agentic feature planning for: $ARGUMENTS
+Agentic feature planning with approval gates for: $ARGUMENTS
 
 ## Agents & Skills
 - Invoke `superpowers:brainstorming` skill during Phase 0 (scope challenge)

@@ -78,7 +78,7 @@
       "hooks": [
         {
           "type": "stop",
-          "command": "echo 'Session ending. Consider running /update-memory or /learn to capture insights from this session.' >&2; exit 0"
+          "command": "echo 'Session ending. Consider running /save to capture insights from this session.' >&2; exit 0"
         }
       ]
     },

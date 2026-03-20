@@ -1,4 +1,4 @@
-Initialize this project with a CLAUDE.md learning loop.
+Scan codebase and generate CLAUDE.md.
 
 ## Steps
 

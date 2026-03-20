@@ -1,4 +1,4 @@
-Autonomous experiment loop for: $ARGUMENTS
+Autonomous modify → measure → decide loop for: $ARGUMENTS
 
 Inspired by Karpathy's autoresearch. Iteratively modify, run, measure, and keep or discard changes to optimize a target metric.
 

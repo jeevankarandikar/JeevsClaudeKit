@@ -107,10 +107,10 @@ ECC provides language-specific reviewers that activate automatically based on fi
 
 ## Design System
 <!-- Read DESIGN.md before making visual/UI decisions -->
-<!-- Created by /design-system, reviewed by /design-review -->
+<!-- Read DESIGN.md before making visual/UI decisions -->
 
 ## Recent Changes
-<!-- Updated by /update-memory after each session -->
+<!-- Updated by /save after each session -->
 
 ## Known Issues
 <!-- Track bugs, tech debt, and quirks here -->

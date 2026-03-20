@@ -1,4 +1,4 @@
-Incrementally fix build errors for: $ARGUMENTS
+Fix build errors one at a time for: $ARGUMENTS
 
 ## Step 1: Detect Build System
 Look for build commands in this order:

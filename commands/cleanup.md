@@ -1,4 +1,4 @@
-Identify and safely remove dead code in: $ARGUMENTS
+Find and remove dead code in: $ARGUMENTS
 
 ## Agents & Skills
 - Dispatch `code-simplifier:code-simplifier` agent to identify simplification opportunities alongside dead code

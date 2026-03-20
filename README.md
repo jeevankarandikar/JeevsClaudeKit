@@ -71,7 +71,8 @@ update my Claude Code environment from JeevsClaudeKit. follow these steps exactl
 1. clone the latest version:
    git clone https://github.com/jeevankarandikar/JeevsClaudeKit.git /tmp/JeevsClaudeKit
 
-2. update commands (overwrites old versions, adds new ones):
+2. remove old commands and copy new ones (handles renames and deletions):
+   rm ~/.claude/commands/*.md
    cp /tmp/JeevsClaudeKit/commands/*.md ~/.claude/commands/
 
 3. update hooks:
@@ -95,11 +96,11 @@ update my Claude Code environment from JeevsClaudeKit. follow these steps exactl
 
 ### setting up a new project
 
-open any project directory and run `/init-project` -- it scans your codebase and generates a CLAUDE.md with your stack, commands, conventions, everything Claude needs to be useful from the first prompt.
+open any project directory and run `/init` -- it scans your codebase and generates a CLAUDE.md with your stack, commands, conventions, everything Claude needs to be useful from the first prompt.
 
 ### setting up an existing project (already has CLAUDE.md)
 
-if the project already has a CLAUDE.md, `/init-project` will detect it and offer to update rather than overwrite. alternatively, you can manually add sections from the template at `~/.claude/CLAUDE.md-template`.
+if the project already has a CLAUDE.md, `/init` will detect it and offer to update rather than overwrite. alternatively, you can manually add sections from the template at `~/.claude/CLAUDE.md-template`.
 
 ---
 
@@ -107,46 +108,36 @@ if the project already has a CLAUDE.md, `/init-project` will detect it and offer
 
 ### commands you can use anywhere
 
-25 slash commands organized by workflow phase.
+19 slash commands organized by workflow phase.
 
 #### planning & scoping
 
 | command | what it does |
 | ------- | ------------ |
-| `/plan-feature [desc]` | scope challenge → research → design with error maps and ASCII diagrams → present plan → wait for approval |
-| `/scope-challenge [idea]` | CEO/founder-mode: challenge the premise, map dream state, choose EXPAND/HOLD/REDUCE scope |
-| `/devils-advocate [change]` | premise challenge + risk analysis + failure modes registry + temporal/deployment risk |
+| `/plan [desc]` | scope challenge → research → design with error maps and ASCII diagrams → present plan → wait for approval |
+| `/challenge [idea]` | challenge premise and scope (EXPAND/HOLD/REDUCE), then risk assessment with failure modes registry and deployment risk |
 
 #### building & fixing
 
 | command | what it does |
 | ------- | ------------ |
 | `/tdd [feature]` | strict test-driven development -- tests first, implementation second, no cutting corners |
-| `/progressive-build [feat]` | builds features in 3 committed phases with approval gates between each |
-| `/build-fix [target]` | incrementally fix build errors one at a time, re-verify after each fix |
-
-#### reviewing & QA
-
-| command | what it does |
-| ------- | ------------ |
-| `/review [code/PR]` | two-pass review: critical (must-fix) + informational, with error & rescue maps |
-| `/design-review [target]` | visual QA with AI slop detection, typography/spacing/interaction checks |
-| `/qa [target]` | systematic browser-based QA using Playwright -- health score, issue tracking |
-| `/perf [code]` | performance deep-dive -- Big O, N+1 queries, memory leaks, the works |
+| `/build-phases [feat]` | builds features in 3 committed phases (core → errors → polish) with approval gates between each |
+| `/fix-build [target]` | fix build errors one at a time, re-verify after each fix |
 
 #### shipping
 
 | command | what it does |
 | ------- | ------------ |
 | `/commit` | commit with my style enforced -- lowercase, no emoji, no prefixes, no trailers |
-| `/commit-push-pr` | pre-flight checks + commit + pre-landing scan + push + PR |
+| `/ship` | pre-flight checks + commit + pre-landing scan + push + PR |
 | `/verify` | run build → types → lint → tests → console audit → git status in sequence |
 
-#### design
+#### QA
 
 | command | what it does |
 | ------- | ------------ |
-| `/design-system [project]` | guided design system creation → produces DESIGN.md with all visual decisions |
+| `/qa [target]` | systematic browser-based QA using Playwright -- health score, issue tracking |
 
 #### understanding & debugging
 
@@ -159,7 +150,7 @@ if the project already has a CLAUDE.md, `/init-project` will detect it and offer
 
 | command | what it does |
 | ------- | ------------ |
-| `/refactor-clean [target]` | find and safely remove dead code -- unused imports, functions, variables, commented-out blocks |
+| `/cleanup [target]` | find and safely remove dead code -- unused imports, functions, variables, commented-out blocks |
 
 #### workflow management
 
@@ -168,16 +159,15 @@ if the project already has a CLAUDE.md, `/init-project` will detect it and offer
 | `/aside [question]` | answer a side question without losing context on the main task |
 | `/checkpoint [name]` | snapshot current work state with context about what's done and what's left |
 | `/retro [timeframe]` | engineering retrospective from git history -- metrics, sessions, hotspots, habits |
-| `/research [target]` | autonomous experiment loop -- modify, run, measure, keep/discard, repeat until optimized |
-| `/fast [task]` | efficiency mode for routine stuff -- minimal tokens, one-shot, no over-thinking |
+| `/experiment [target]` | autonomous experiment loop -- modify, run, measure, keep/discard, repeat until optimized |
+| `/journal` | write today's dev journal entry -- what happened, decisions, what's next, open questions |
 
 #### session management
 
 | command | what it does |
 | ------- | ------------ |
-| `/init-project` | scans your project and generates a CLAUDE.md so Claude actually knows what it's working with |
-| `/update-memory` | captures what you learned this session into CLAUDE.md for next time |
-| `/learn` | extract reusable patterns (errors, conventions, workarounds) from this session into CLAUDE.md or memory |
+| `/init` | scans your project and generates a CLAUDE.md so Claude actually knows what it's working with |
+| `/save` | capture session learnings into CLAUDE.md (project-specific) and memory (personal/general) |
 
 ### hooks that run automatically
 
@@ -186,7 +176,7 @@ these sit in the background and catch problems before they happen. no action nee
 - **destructive command blocker** -- intercepts `rm -rf`, `git reset --hard`, `git push --force`, `DROP TABLE`, and other commands that can ruin your day. blocks execution until you explicitly confirm.
 - **sensitive file warning** -- warns when Claude tries to edit files with `.env`, credentials, secrets, api keys. doesn't block, just makes sure you're paying attention.
 - **co-authored-by blocker** -- Claude's system prompt tries to add `Co-Authored-By` trailers to every commit. this hook kills that. also blocks `Signed-off-by`.
-- **session end reminder** -- when Claude stops, reminds you to run `/update-memory` or `/learn` to capture session insights.
+- **session end reminder** -- when Claude stops, reminds you to run `/save` to capture session insights.
 - **debug statement warning** -- warns when an edit introduces `console.log`, `debugger`, `binding.pry`, or `print(` statements. doesn't block, just flags for removal before committing.
 
 ### plugins
@@ -197,10 +187,10 @@ these sit in the background and catch problems before they happen. no action nee
 - **context7** -- when you mention a library, it pulls the actual current docs instead of hallucinating from training data.
 - **typescript-lsp** -- real-time type errors and missing imports. catches stuff before you even run the code.
 - **feature-dev** -- 7-phase feature workflow with parallel architect agents when you need to build something serious.
-- **github** -- native access to PRs, issues, repos through MCP. makes `/commit-push-pr` actually work well.
+- **github** -- native access to PRs, issues, repos through MCP. makes `/ship` actually work well.
 - **pr-review-toolkit** -- 6 parallel review agents for deep PR review.
 - **code-review** -- 5 parallel sonnet agents with confidence-based scoring.
-- **playwright** -- browser automation for `/qa` and `/design-review` commands.
+- **playwright** -- browser automation for `/qa` command and design reviews.
 - **everything-claude-code** -- 25 specialized agents (architect, security-reviewer, database-reviewer, build-error-resolver, e2e-runner, refactor-cleaner, planner, tdd-guide, doc-updater, plus language-specific reviewers for python/go/rust/c++/java/kotlin), 108 skills, hooks infrastructure. installed as a community plugin via its own marketplace.
 
 also enabled: security-guidance, claude-md-management, code-simplifier, claude-code-setup, frontend-design, commit-commands, hookify, plugin-dev.
@@ -219,59 +209,79 @@ these are baked into CLAUDE.md, the custom commands, and the hooks -- so they're
 
 ---
 
+## cheat sheet
+
+```
+/plan [desc]          plan a feature with approval gates
+/challenge [idea]     challenge scope, risks, assumptions
+/tdd [feature]        tests first, then implement
+/build-phases [feat]  build in 3 phases: core → errors → polish
+/fix-build [target]   fix build errors one at a time
+/commit               commit with project conventions
+/ship                 commit + push + open PR
+/verify               build → types → lint → tests → audit
+/qa [target]          browser QA with Playwright
+/debug [issue]        systematic 5-step debugging
+/explain [area]       walk through code like onboarding
+/cleanup [target]     find and remove dead code
+/aside [question]     quick side question, stay on task
+/checkpoint [name]    snapshot current work
+/retro [timeframe]    retrospective from git history
+/experiment [target]  modify → measure → decide loop
+/journal              write today's dev journal entry
+/init                 scan codebase, generate CLAUDE.md
+/save                 capture session learnings
+```
+
+---
+
 ## how I actually use this day-to-day
 
 ```bash
 # first time in any project
-/init-project
+/init
 
 # building something
-/scope-challenge user authentication system
+/challenge user authentication system
 # pick HOLD scope
-/plan-feature user authentication system
+/plan user authentication system
 # review the plan, approve it
 /tdd login flow
 # tests get written first, then implementation
-/review
 /verify
-/commit-push-pr
+/ship
 
 # hit a bug
 /debug users can't reset passwords after 24 hours
 # systematic analysis, not guessing
 
 # build broke
-/build-fix
+/fix-build
 
 # quick detour
 /aside what's the difference between bcrypt and argon2?
-
-# frontend work
-/design-system
-# later...
-/design-review
 
 # QA before shipping
 /qa standard
 
 # end of session
-/learn
-/update-memory
+/save
+/journal
 
 # weekly check-in
 /retro 7d
 ```
 
-the key insight is the CLAUDE.md learning loop -- `/init-project` creates it, Claude reads it every session, `/update-memory` and `/learn` keep it current. next time you open Claude in that project, it already knows your stack, your conventions, your recent changes, your known issues. no re-explaining.
+the key insight is the CLAUDE.md learning loop -- `/init` creates it, Claude reads it every session, `/save` keeps it current. next time you open Claude in that project, it already knows your stack, your conventions, your recent changes, your known issues. no re-explaining.
 
 ---
 
 ## sources
 
 this toolkit merges patterns from:
-- **[gstack](https://github.com/garrytan/gstack)** — CEO review, eng review, code review, ship, QA, retro, design consultation, design review workflows
-- **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** — build-fix, learn, verify, refactor-clean, aside, checkpoint, 25 specialized agents, 108 skills (also installed as a plugin for direct agent access)
-- **[autoresearch](https://github.com/karpathy/autoresearch)** — autonomous experiment loop pattern: modify, run, measure, keep/discard, repeat
+- **[gstack](https://github.com/garrytan/gstack)** -- CEO review, eng review, code review, ship, QA, retro, design consultation, design review workflows
+- **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** -- build-fix, learn, verify, refactor-clean, aside, checkpoint, 25 specialized agents, 108 skills (also installed as a plugin for direct agent access)
+- **[autoresearch](https://github.com/karpathy/autoresearch)** -- autonomous experiment loop pattern: modify, run, measure, keep/discard, repeat
 
 ---
 
@@ -280,31 +290,25 @@ this toolkit merges patterns from:
 ```
 JeevsClaudeKit/
   commands/              # slash commands -> ~/.claude/commands/
-    tdd.md
-    plan-feature.md
-    debug.md
-    review.md
-    perf.md
-    commit.md
-    commit-push-pr.md
-    init-project.md
-    progressive-build.md
-    devils-advocate.md
-    explain.md
-    fast.md
-    update-memory.md
-    scope-challenge.md
-    retro.md
-    qa.md
-    design-system.md
-    design-review.md
-    build-fix.md
-    learn.md
-    verify.md
-    refactor-clean.md
     aside.md
+    build-phases.md
+    challenge.md
     checkpoint.md
-    research.md
+    cleanup.md
+    commit.md
+    debug.md
+    experiment.md
+    explain.md
+    fix-build.md
+    init.md
+    journal.md
+    plan.md
+    qa.md
+    retro.md
+    save.md
+    ship.md
+    tdd.md
+    verify.md
   hooks/
     hooks.json           # native hooks -> ~/.claude/hooks/
   settings.json          # plugin config -> merge into ~/.claude/settings.json
