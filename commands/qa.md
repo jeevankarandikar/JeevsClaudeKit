@@ -1,68 +1,85 @@
 Systematic QA testing for: $ARGUMENTS
 
-## Agents & Skills
-- Use Playwright MCP tools (`browser_navigate`, `browser_snapshot`, `browser_click`, `browser_take_screenshot`) for all browser interactions
-- If visual issues are found, dispatch `pr-review-toolkit:code-reviewer` agent on the relevant frontend files
+Detects platform automatically:
+- `.xcodeproj` / `.xcworkspace` found → iOS mode (Xcode simulator)
+- Web project (package.json with dev server) → Browser mode (Playwright)
 
-Uses Playwright browser automation for visual and functional testing.
+---
 
-## Prerequisites
-1. Check if Playwright plugin is enabled in settings. If not: STOP and tell the user to enable it.
-2. Determine the dev server URL (from CLAUDE.md, package.json scripts, or ask the user).
+## iOS Mode
 
-## Step 1: Orient
-1. Navigate to the root URL, take a screenshot
+### Step 1: Build & Run
+1. Detect scheme: `xcodebuild -list -json` → pick the app scheme
+2. Build for simulator: `xcodebuild -scheme <scheme> -destination 'platform=iOS Simulator,name=iPhone 16' build`
+3. If build fails: STOP and report errors (use `/build` to fix)
+
+### Step 2: Code-Level QA
+Search the codebase for common iOS issues:
+- Force unwraps (`!`) outside of IBOutlets — flag each one
+- Missing `@MainActor` on view model mutations
+- Network calls without error handling
+- Missing loading states (ProgressView) for async operations
+- Hardcoded strings that should be localized
+- Missing accessibility labels on interactive elements
+- Views without `.task {}` cleanup or cancellation handling
+
+### Step 3: Architecture Review
+- Are all views using the MVVM pattern consistently?
+- Are services properly injected (not instantiated in views)?
+- Is navigation handled consistently?
+- Are models Codable/Identifiable where needed?
+
+### Step 4: Report (iOS)
+- Build status: PASS/FAIL
+- Code issues found: N (by severity)
+- Architecture issues: N
+- Top 3 to fix first
+
+---
+
+## Browser Mode (Playwright)
+
+### Prerequisites
+1. Check if Playwright plugin is enabled. If not: STOP.
+2. Determine the dev server URL (from CLAUDE.md, package.json, or ask).
+
+### Step 1: Orient
+1. Navigate to root URL, take a screenshot
 2. Map primary navigation — list all reachable pages/routes
 3. Check browser console for errors on initial load
-4. Note the tech stack visible in the page (framework, CSS approach)
 
-## Step 2: Scope Selection
-Choose a tier based on $ARGUMENTS or ask:
-- **Quick** (homepage + 5 key pages, ~30 seconds): smoke test core flows
-- **Standard** (8-12 pages, 2-3 minutes): systematic page-by-page testing
-- **Exhaustive** (all discoverable pages, 5-10 minutes): full coverage including edge cases
+### Step 2: Scope Selection
+Choose tier based on $ARGUMENTS or ask:
+- **Quick** (homepage + 5 key pages): smoke test core flows
+- **Standard** (8-12 pages): systematic page-by-page
+- **Exhaustive** (all discoverable pages): full coverage
 
-## Step 3: Diff-Aware Mode (if applicable)
-If there's an active branch with changes:
+### Step 3: Diff-Aware Mode
+If there's an active branch:
 1. `git diff main...HEAD --name-only` to find changed files
-2. Map changed files to affected pages/routes
+2. Map changed files to affected pages
 3. Prioritize testing those pages first
 
-## Step 4: Systematic Testing
-For each page in scope:
+### Step 4: Systematic Testing
+For each page:
 1. Navigate and screenshot
 2. Check console for errors/warnings
 3. Test interactive elements: buttons, forms, links, dropdowns, modals
-4. Test responsive behavior: desktop (1280px), tablet (768px), mobile (375px)
-5. Verify text is readable, images load, layout doesn't break
+4. Test responsive: desktop (1280px), tablet (768px), mobile (375px)
+5. Verify text readable, images load, layout intact
 
-## Issue Documentation
-For each issue found, record:
-- **ID**: QA-NNN
-- **Severity**: critical (broken functionality) / high (major visual bug) / medium (minor visual) / low (polish)
+### Issue Documentation
+For each issue:
+- **Severity**: critical / high / medium / low
 - **Category**: visual / functional / ux / content / performance / console / accessibility
 - **Page**: URL or route
 - **Description**: what's wrong
-- **Repro**: steps to reproduce
-- **Screenshot**: if applicable
 
-## Severity Definitions
-- **Critical**: feature is broken, data loss possible, page won't load, security issue
-- **High**: feature works but incorrectly, major layout break, form doesn't submit
-- **Medium**: visual inconsistency, minor layout issue, content typo, slow interaction
-- **Low**: polish item, spacing tweaks, hover state missing, minor alignment
+### Health Score (0-100)
+Start at 100. Critical: -25, High: -10, Medium: -3, Low: -1.
 
-## Health Score
-Calculate 0-100 score:
-- Start at 100
-- Critical: -25 each
-- High: -10 each
-- Medium: -3 each
-- Low: -1 each
-
-## Report
-1. **Health Score**: N/100
-2. **Issues Found**: N (X critical, Y high, Z medium, W low)
-3. **Top 3 to fix first**: ordered by severity then effort
-4. **Full issue list**: sorted by severity
-5. **Pages tested**: list with pass/fail status
+### Report (Browser)
+1. Health score: N/100
+2. Issues found: N (by severity)
+3. Top 3 to fix first
+4. Full issue list sorted by severity

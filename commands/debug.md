@@ -1,6 +1,6 @@
 Systematic debugging protocol for: $ARGUMENTS
 
-Follow this structured approach - no guessing:
+Follow this structured approach — no guessing:
 
 ## Step 1: Reproduce & Observe
 1. Understand the symptoms described above
@@ -16,7 +16,7 @@ Follow this structured approach - no guessing:
 
 ## Step 3: Root Cause Analysis
 1. Form a hypothesis about the root cause
-2. Verify the hypothesis by reading code - don't guess
+2. Verify the hypothesis by reading code — don't guess
 3. Trace the data flow from input to the failure point
 4. Identify the EXACT line/condition that causes the bug
 
