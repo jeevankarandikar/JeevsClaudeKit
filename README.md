@@ -1,6 +1,6 @@
 # JeevsClaudeKit
 
-my personal Claude Code setup. 8 commands, 5 hooks, 17 plugins, and conventions that make Claude actually useful for real development work. consolidated from 19 commands down to 8 — each one is smarter and handles multiple modes instead of being a thin wrapper.
+my personal Claude Code setup. 8 commands, 5 hooks, 17 plugins, and conventions that make Claude actually useful for real development work. consolidated from 19 commands down to 8 - each one is smarter and handles multiple modes instead of being a thin wrapper.
 
 this is a living setup — I update it as I find new patterns that work.
 
@@ -30,10 +30,11 @@ set up my Claude Code environment using JeevsClaudeKit. follow these steps exact
 5. merge settings into ~/.claude/settings.json -- read my current file first, then merge these values WITHOUT overwriting my existing permissions.allow entries:
    - set defaultMode to "plan"
    - set effortLevel to "high"
-   - enable these plugins (set to true): superpowers, context7, typescript-lsp, security-guidance, claude-md-management, code-simplifier, claude-code-setup, frontend-design, feature-dev, commit-commands, hookify, github, pr-review-toolkit, code-review, plugin-dev, playwright (all @claude-plugins-official)
+   - enable these plugins (set to true): superpowers, context7, typescript-lsp, security-guidance, claude-md-management, code-simplifier, claude-code-setup, frontend-design, feature-dev, commit-commands, hookify, github, pr-review-toolkit, code-review, plugin-dev, playwright (all @claude-plugins-official), everything-claude-code (@everything-claude-code)
+   - merge the extraKnownMarketplaces block so the ECC marketplace (affaan-m/everything-claude-code) is registered
    - set these to false: serena, supabase, greptile, ralph-loop
 
-6. install official marketplace plugins:
+6. install all plugins (official + everything-claude-code):
    claude plugin install superpowers@claude-plugins-official
    claude plugin install context7@claude-plugins-official
    claude plugin install typescript-lsp@claude-plugins-official
@@ -50,15 +51,13 @@ set up my Claude Code environment using JeevsClaudeKit. follow these steps exact
    claude plugin install code-review@claude-plugins-official
    claude plugin install plugin-dev@claude-plugins-official
    claude plugin install playwright@claude-plugins-official
-
-7. install everything-claude-code (community plugin with 25 agents):
    claude plugin marketplace add affaan-m/everything-claude-code
    claude plugin install everything-claude-code@everything-claude-code
 
-8. clean up:
+7. clean up:
    rm -rf /tmp/JeevsClaudeKit
 
-9. tell me what was installed and flag any errors.
+8. tell me what was installed and flag any errors.
 ```
 
 ### updating an existing installation
@@ -79,7 +78,9 @@ update my Claude Code environment from JeevsClaudeKit. follow these steps exactl
 4. update the CLAUDE.md template:
    cp /tmp/JeevsClaudeKit/CLAUDE.md-template ~/.claude/CLAUDE.md-template
 
-5. merge new settings into ~/.claude/settings.json -- read my current file first, then ONLY add new plugin entries. do NOT overwrite my existing permissions.allow entries or change plugins I've manually toggled.
+5. merge new settings into ~/.claude/settings.json -- read my current file first, then ONLY add new plugin entries. do NOT overwrite my existing permissions.allow entries or change plugins I've manually toggled. if the ECC marketplace isn't registered locally, also run:
+   claude plugin marketplace add affaan-m/everything-claude-code
+   claude plugin install everything-claude-code@everything-claude-code
 
 6. clean up:
    rm -rf /tmp/JeevsClaudeKit
@@ -232,7 +233,7 @@ JeevsClaudeKit/
     ship.md
   hooks/
     hooks.json           # 5 native hooks -> ~/.claude/hooks/
-  settings.json          # plugin config -> merge into ~/.claude/settings.json
+  settings.json          # plugin config (16 official + ECC) -> merge into ~/.claude/settings.json
   CLAUDE.md-template     # project template -> ~/.claude/CLAUDE.md-template
   CLAUDE.md              # this project's own config
 ```
