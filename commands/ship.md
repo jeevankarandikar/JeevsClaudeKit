@@ -1,10 +1,21 @@
 Ship current work. Detects mode from context:
 
-- **No args or "commit"** → commit only
-- **"pr" or "push"** → full ship: verify + commit + push + PR
+- **No args** → auto-detect default from CLAUDE.md (see below)
+- **"commit"** → commit only, no push
+- **"push"** → commit + push to current branch, no PR
+- **"pr"** → full ship: verify + commit + push + PR
 - **"verify" or "check"** → verify only, no changes
 
 $ARGUMENTS
+
+## Auto-detect default mode
+
+When invoked with no args, grep CLAUDE.md for any of these signals to pick the default:
+
+- Phrase `push to main`, `push-to-main`, `no PR`, `no pull request`, `worktree`, or an explicit `ship-mode: push` marker → default is **push** mode
+- Otherwise → default is **commit** mode (safest fallback)
+
+Explicit arguments always override auto-detect.
 
 ---
 
@@ -33,6 +44,19 @@ $ARGUMENTS
    )"
    ```
 5. Run `git status` to verify
+
+---
+
+## Mode: Push (commit + push, no PR)
+
+For solo-on-main repos and worktree workflows.
+
+1. Run commit flow above.
+2. Before pushing to `main` under auto-detected push mode: show the commits that will land (`git log origin/main..HEAD --oneline`) and confirm once. In explicit `"push"` mode, skip the confirm — user already opted in.
+3. `git push` (use `-u origin HEAD` if upstream not set).
+4. Report: what was pushed and to where.
+
+No PR created. Do not run the full PR pre-flight (merge base-branch, verify, etc.) — those belong in `pr` mode.
 
 ---
 
