@@ -1,75 +1,58 @@
-Capture session learnings and update project docs.
+Capture session learnings across up to three doc surfaces. Cheap on tokens — append only, never regenerate.
 
-Handles three things in one pass:
-1. **CLAUDE.md** — update with session findings (or create via init if missing)
-2. **Journal** — write today's dev journal entry
-3. **Memory** — save personal/general learnings to memory system
+## Doc surfaces
 
-## Step 1: Check for CLAUDE.md
+This command touches whichever of these exist in the project. If a file is missing, skip it silently (no prompt, no auto-create).
 
-If no CLAUDE.md exists at the project root, run init first:
-1. Read package.json, Cargo.toml, pyproject.toml, go.mod, .xcodeproj, or equivalent
-2. Scan directory structure, config files, test setup
-3. Create CLAUDE.md with: project context, stack, build/test/lint commands, conventions, key paths
-4. Then continue with steps below.
+1. `docs/changelog.md` — compact what-shipped, one bullet per change
+2. `docs/journal.md` — themed subsections with terse technical bullets + open questions
+3. `CLAUDE.md` — project context, update only the "current state" or "recent changes" section
 
-## Step 2: Scan the Conversation
+## Rules (apply to every step)
 
-Look for insights worth preserving:
-- **Error patterns**: errors encountered and how they were resolved
-- **Conventions discovered**: codebase patterns, naming rules, architectural decisions
-- **Workarounds applied**: non-obvious solutions to tricky problems
-- **Architecture decisions**: structural choices made and why
-- **Tool/dependency quirks**: unexpected behaviors of libraries or frameworks
-- **New gotchas**: things that would trip up a future session
+- **Append, don't regenerate.** Read only the top 40 lines to find today's date header. Use Edit to insert under an existing header. Use Write only when creating a brand-new section at the top.
+- **No approval gate.** Just do it and report what was appended.
+- **No conversation scan.** Log what the user told you to log, or the last few concrete changes from the current session. Don't re-read the whole conversation.
+- **Lowercase**, match existing voice in each file.
+- **Resolve today's date** once, reuse across all steps. Format matches the file's existing convention (e.g. `april 13, 2026`).
 
-## Step 3: Update CLAUDE.md
+## Step 1: changelog.md
 
-Route project-specific findings to the right sections:
-- Add to "Recent Changes" with today's date
-- Add any new "Known Issues"
-- Update "Current Sprint" task statuses
-- Add any new "Gotchas" discovered
-- Update paths if files were moved/renamed
+Skip if file doesn't exist.
 
-Keep entries concise. Don't duplicate existing entries — update them.
+- Read top 40 lines. Find today's `## <month day, year>` header.
+- If today's section exists: append new bullets under it with Edit.
+- If not: insert a new `## <month day, year>` section at the top (below any intro paragraph) with Write's equivalent via Edit at a known anchor.
+- Bullet format: `- **<short title>**: <one-to-two sentences, 80–180 chars>`.
+- Never touch previous days.
 
-## Step 4: Update Journal
+## Step 2: journal.md
 
-Find the journal file (check `docs/journal.md`, `JOURNAL.md`, or `journal.md`). If it doesn't exist, create at `docs/journal.md`.
+Skip if file doesn't exist.
 
-Write today's entry at the TOP (newest first):
+- Same append rule as step 1.
+- Today's header format typically: `## <month day, year> — <session theme>`.
+- Under it, add bold subsection titles and terse bullets (1–3 sentences each).
+- Capture decisions, trade-offs, and open questions — not a replay of what's in changelog.
 
-```markdown
-## YYYY-MM-DD — [short theme/title]
+## Step 3: CLAUDE.md
 
-### what happened
-- [key events, work done]
+- Find the "current state" section (may be named `current state (<date>)`, `Recent Changes`, or similar). Update only that section.
+- Do not touch repo tree, critical rules, gotchas, or reference tables unless they actually changed this session.
+- If CLAUDE.md exceeds 15K chars, flag it and suggest which section to move to a reference file. Do not auto-move.
 
-### key decisions
-- [directional choices, scope changes]
+## Step 4: memory (optional)
 
-### what's next
-- [concrete next steps]
+- Only save to `~/.claude/projects/.../memory/` if there's a genuinely reusable pattern for future sessions.
+- Skip entirely otherwise. Do not save ephemeral task state.
 
-### open questions
-- [unresolved items]
+## Output
+
+After all applicable steps, print a one-line summary per file touched:
+
 ```
-
-If today already has an entry, update it rather than duplicating.
-
-## Step 5: Save to Memory
-
-Route personal/general learnings (debugging techniques, tool quirks, preferences) to the memory system. Only save genuinely useful patterns, not obvious things.
-
-## Step 6: Present Before Writing
-
-Show what will be saved and where. Wait for approval before writing.
-
-## Rules
-- Only save genuinely useful patterns
-- Include enough context for actionability in future sessions
-- Keep CLAUDE.md scannable, not verbose
-- Date-stamp recent changes
-- Be specific about what was built, not just what was discussed
-- Lowercase in journal entries (match project style)
+changelog.md: +3 bullets under april 13, 2026
+journal.md: +1 subsection under april 13, 2026 — onboarding overhaul
+CLAUDE.md: current state section updated (shipped +2, next +1)
+memory: skipped — nothing new
+```
