@@ -19,6 +19,17 @@
 - [Entry point(s)]
 - [Database/ORM if applicable]
 
+## Docs Conventions
+<!-- Tells /save which doc surfaces exist. Delete lines that don't apply. -->
+- `docs/changelog.md` — compact what-shipped, one bullet per change, newest first
+- `docs/journal.md` — decisions + reasoning, themed subsections, newest first
+- `CLAUDE.md` — this file, project context. Keep under 15K chars. Update only the "Recent Changes" or "Current State" section per session.
+
+## Worktree + Branch Model
+<!-- Tells /ship whether to default to push or commit-only. Pick one. -->
+- **push to main from worktrees, no PR** — each session runs in its own git worktree; `/ship` with no args defaults to push
+- OR — **feature branches + PRs to main** — `/ship` defaults to commit-only; use `/ship pr` to open a PR
+
 ## Conventions
 
 ### Commits
