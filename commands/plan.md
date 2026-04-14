@@ -1,10 +1,20 @@
 Plan, scope-challenge, and design for: $ARGUMENTS
 
-## Agents & Skills
-- Invoke `superpowers:brainstorming` skill during scope challenge
-- Invoke `superpowers:writing-plans` skill during design phase
-- Dispatch `feature-dev:code-architect` agent for codebase research and architecture design
-- Dispatch `feature-dev:code-explorer` agent to find existing patterns and reusable code
+## When to escalate to subagents
+
+By default, run the five phases below inline — Claude Code's plan mode already covers the same ground that feature-dev agents would, and dispatching them on small tasks wastes tokens.
+
+**Only escalate when the change is large:**
+- touches more than 5 files, OR
+- introduces a new subsystem / module, OR
+- integration with existing code is unclear after a first read
+
+If any of those apply, dispatch in parallel:
+- `feature-dev:code-explorer` to map existing patterns and reusable code
+- `feature-dev:code-architect` to propose architecture
+- load `superpowers:brainstorming` during Phase 0 and `superpowers:writing-plans` during Phase 2
+
+For small and medium plans, skip all of the above and just run the phases.
 
 Before writing ANY code, follow this sequence:
 
