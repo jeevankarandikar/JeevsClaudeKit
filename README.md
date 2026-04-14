@@ -102,12 +102,12 @@ open any project directory and run `/save` — if no CLAUDE.md exists, it will i
 | ------- | ------------ |
 | `/plan [desc]` | scope challenge (EXPAND/HOLD/REDUCE) → research → design with error maps and ASCII diagrams → risk assessment → present plan → wait for approval |
 | `/build [feature]` | auto-detects mode: build errors → fix one at a time; new feature → TDD (tests first); otherwise → phased build (core → errors → polish) |
-| `/ship` | smart shipping: no args = commit only; "pr" = verify + commit + push + PR; "verify" = check only. all modes enforce lowercase/no-trailer conventions |
+| `/ship` | smart shipping: no args = auto-detect from CLAUDE.md (push mode if worktree/push-to-main workflow, else commit-only); "push" = commit + push, no PR; "pr" = verify + commit + push + PR; "verify" = check only. all modes enforce lowercase/no-trailer conventions |
 | `/clean [target]` | full cleanup: dead code + repo organization + file consolidation + reference updates. not just dead code removal |
 | `/debug [issue]` | systematic 5-step root cause analysis: reproduce → gather context → hypothesize → fix → prevent |
 | `/qa [target]` | auto-detects platform: iOS project → xcode build + code-level QA; web project → playwright browser testing with health scoring |
 | `/review [timeframe]` | retrospective from git history (default); or `experiment` mode for autonomous modify → measure → decide loops |
-| `/save` | all-in-one session end: updates CLAUDE.md (or inits if missing) + writes journal entry + saves personal learnings to memory |
+| `/save` | three-doc append: `docs/changelog.md` (compact what-shipped), `docs/journal.md` (decisions + reasoning), `CLAUDE.md` (current-state section only). skips any surface that doesn't exist. no approval gate, no template regen, token-efficient |
 
 ### what got consolidated
 
@@ -146,7 +146,7 @@ open any project directory and run `/save` — if no CLAUDE.md exists, it will i
 
 baked into commands, hooks, and CLAUDE.md:
 
-- **commits** — lowercase, concise, no emoji, no prefixes, no trailers, one change per commit
+- **commits** — lowercase, concise, no emoji, no prefixes, one change per commit. trailers (`Co-Authored-By`, `Signed-off-by`) are blocked by the co-authored-by hook and will never land in a commit
 - **code comments** — explain why, not what. minimal in swift
 - **documentation** — CLAUDE.md is single source of truth
 - **error handling** — name specific exceptions, every rescue must retry/degrade/re-raise
@@ -158,7 +158,9 @@ baked into commands, hooks, and CLAUDE.md:
 ```
 /plan [desc]          plan + scope challenge + risk assessment
 /build [feature]      build (auto: fix / tdd / phased)
-/ship                 commit only (default)
+/ship                 auto-detect from CLAUDE.md (push or commit)
+/ship commit          commit only, no push
+/ship push            commit + push to current branch, no PR
 /ship pr              verify + commit + push + PR
 /ship verify          check everything, no changes
 /clean [target]       dead code + repo org + consolidation

@@ -16,12 +16,12 @@
 |---------|-------|
 | `/plan` | scope challenge → research → design → risk → present |
 | `/build` | auto-detect: fix-build / TDD / phased build |
-| `/ship` | commit (default) / verify / full PR |
+| `/ship` | auto-detect from CLAUDE.md / commit / push / pr / verify |
 | `/clean` | dead code + repo org + consolidation + reference updates |
 | `/debug` | 5-step root cause analysis |
 | `/qa` | auto-detect: iOS (xcode) / browser (playwright) |
 | `/review` | retrospective (default) / experiment loop |
-| `/save` | CLAUDE.md + journal + memory in one pass |
+| `/save` | append-only: changelog.md + journal.md + CLAUDE.md current-state |
 
 ## Conventions
 
@@ -43,6 +43,7 @@
 - never add comments to code you didn't change
 
 ## Recent Changes
+- 2026-04-13: audited kit against real pinpal workflow. /save rewritten as token-efficient three-doc append (changelog.md + journal.md + CLAUDE.md current-state). /ship gained push mode + auto-detect from CLAUDE.md worktree section. /plan made subagent dispatch opt-in for large changes only. /build and /qa now run xcodegen before xcodebuild when ios/project.yml exists and know `cd website && npx next build` for next.js. CLAUDE.md-template gained docs-conventions and worktree-model sections.
 - 2026-04-01: consolidated 19 commands → 8 smart multi-mode commands. added iOS/xcode support to /qa and /build. expanded /clean with repo organization. merged /save + /journal + /init. updated README with new cheat sheet and consolidation table.
 - 2026-03-20: slimmed commands from 25 to 19
 - 2026-03-18: merged gstack + everything-claude-code + autoresearch patterns
