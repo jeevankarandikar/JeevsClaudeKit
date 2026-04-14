@@ -12,13 +12,17 @@ Detects the right mode automatically based on context:
 ### Step 1: Detect Build System
 Look for build commands in this order:
 1. CLAUDE.md "Build" or "Key Commands" section
-2. `.xcodeproj` / `.xcworkspace` → `xcodebuild -scheme <scheme> build`
-3. `Package.swift` → `swift build`
-4. `package.json` scripts: `build`, `compile`, `tsc`
-5. `Cargo.toml` → `cargo build`
-6. `go.mod` → `go build ./...`
-7. `Makefile` → `make`
-8. Ask the user if nothing is detected
+2. `ios/project.yml` (xcodegen-managed) → `cd ios && xcodegen generate && xcodebuild -scheme <scheme> build`
+3. `website/package.json` → `cd website && npx next build`
+4. `.xcodeproj` / `.xcworkspace` at repo root → `xcodebuild -scheme <scheme> build`
+5. `Package.swift` → `swift build`
+6. `package.json` scripts: `build`, `compile`, `tsc`
+7. `Cargo.toml` → `cargo build`
+8. `go.mod` → `go build ./...`
+9. `Makefile` → `make`
+10. Ask the user if nothing is detected
+
+Note on xcodegen: if `ios/project.yml` exists, always run `xcodegen generate` before `xcodebuild`. The `.xcodeproj` is generated and may be stale.
 
 ### Step 2: Fix Loop
 For each error (one at a time):

@@ -9,9 +9,10 @@ Detects platform automatically:
 ## iOS Mode
 
 ### Step 1: Build & Run
-1. Detect scheme: `xcodebuild -list -json` → pick the app scheme
-2. Build for simulator: `xcodebuild -scheme <scheme> -destination 'platform=iOS Simulator,name=iPhone 16' build`
-3. If build fails: STOP and report errors (use `/build` to fix)
+1. If `ios/project.yml` exists: `cd ios && xcodegen generate` first (the `.xcodeproj` is generated and may be stale)
+2. Detect scheme: `xcodebuild -list -json` → pick the app scheme
+3. Build for simulator: `xcodebuild -scheme <scheme> -destination 'platform=iOS Simulator,name=iPhone 16' build`
+4. If build fails: STOP and report errors (use `/build` to fix)
 
 ### Step 2: Code-Level QA
 Search the codebase for common iOS issues:
@@ -41,7 +42,7 @@ Search the codebase for common iOS issues:
 
 ### Prerequisites
 1. Check if Playwright plugin is enabled. If not: STOP.
-2. Determine the dev server URL (from CLAUDE.md, package.json, or ask).
+2. Determine the dev server URL (from CLAUDE.md, package.json, or ask). For Next.js projects in `website/`, the build check is `cd website && npx next build` — run this before QA if you want a fresh build.
 
 ### Step 1: Orient
 1. Navigate to root URL, take a screenshot
