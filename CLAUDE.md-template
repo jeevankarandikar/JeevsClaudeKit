@@ -1,5 +1,15 @@
 # CLAUDE.md
 
+<!-- Strategic Shift block — OPTIONAL. Use when a major repositioning, competitive event, or pivot happens. Replace YYYY-MM-DD with the date, write 3-5 short paragraphs covering: what changed, the new positioning, the moat thesis, the phasing, and links to plan files / audit snapshots. Delete this block when stale or superseded by a newer one. Example pattern lives in the PinPal repo CLAUDE.md. -->
+<!--
+## YYYY-MM-DD strategic shift — read first
+
+[What changed]
+[New positioning / moat thesis]
+[Phasing — Phase 1 / Phase 2 / Phase 3]
+[Strategic backbone files: ~/.claude/plans/*.md + research/archive/...]
+-->
+
 ## Project Context
 - **Name**: [project name]
 - **Stack**: [languages, frameworks, databases, key libraries]
@@ -18,6 +28,18 @@
 - [Key directories and their purpose]
 - [Entry point(s)]
 - [Database/ORM if applicable]
+
+## Working Principles (project-local sharpening of SOUL)
+
+Inherited from `~/.claude/SOUL.md`; the rules below are project-specific concrete additions. Folds in Karpathy's discipline (Think → Simplicity → Surgical → Goal-Driven) where it sharpens SOUL.
+
+- **Plan before touching code.** Investigate, read files, grep patterns. Don't edit-then-explain. Plan mode is the default.
+- **Surgical changes only.** Every line you change traces directly to the user's request. Don't "improve" adjacent code, formatting, or comments — that's scope creep.
+- **Simplicity wins.** No abstractions for single-use code. No features beyond what was asked. If 200 lines could be 50, rewrite it.
+- **Stop when confused.** Name what's unclear and ask. Don't guess silently. State assumptions explicitly when you proceed under uncertainty.
+- **Verify after each step.** Multi-step plans state `1. [step] → verify: [check]`. Don't claim success without the check.
+- **Pause when inputs are pending.** If the user is running research, a build, or a deploy that informs the next decision, stop drafting speculative output. Mark blocked sections, wait, synthesize once.
+- **Worktree-per-track parallelism.** Multiple tracks (strategy / implementation / docs) → spin up worktrees per track on Sonnet 4.6. Reserve Opus 4.7 for strategic-synthesis sessions.
 
 ## Docs Conventions
 <!-- Tells /save which doc surfaces exist. Delete lines that don't apply. -->
@@ -133,3 +155,9 @@ ECC provides language-specific reviewers that activate automatically based on fi
 <!-- Non-obvious things that have caused confusion or bugs -->
 <!-- Things that look wrong but are intentional -->
 <!-- Environment-specific behaviors -->
+
+## References
+
+- `~/.claude/SOUL.md` — global behavioral floor. Project rules add to this; never override.
+- `<this-repo>/memory/MEMORY.md` (if present) — facts: who, what, why. Auto-loaded with each entry.
+- Karpathy-style discipline: https://github.com/forrestchang/andrej-karpathy-skills — Think Before Coding · Simplicity First · Surgical Changes · Goal-Driven Execution.

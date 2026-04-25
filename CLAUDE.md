@@ -43,6 +43,7 @@
 - never add comments to code you didn't change
 
 ## Recent Changes
+- 2026-04-24: CLAUDE.md-template gained "Working Principles" section (folds Karpathy's Think → Simplicity → Surgical → Goal-Driven into project-local sharpening of SOUL), optional "Strategic Shift" placeholder block at top (for use when major repositioning happens), and References footer pointing to SOUL + per-project MEMORY + Karpathy skills repo. Surfaced from PinPal session 2026-04-24 where the team got beat to market by a competitor and needed to consolidate the strategic shift into the project CLAUDE.md.
 - 2026-04-13: audited kit against real pinpal workflow. /save rewritten as token-efficient three-doc append (changelog.md + journal.md + CLAUDE.md current-state). /ship gained push mode + auto-detect from CLAUDE.md worktree section. /plan made subagent dispatch opt-in for large changes only. /build and /qa now run xcodegen before xcodebuild when ios/project.yml exists and know `cd website && npx next build` for next.js. CLAUDE.md-template gained docs-conventions and worktree-model sections.
 - 2026-04-01: consolidated 19 commands → 8 smart multi-mode commands. added iOS/xcode support to /qa and /build. expanded /clean with repo organization. merged /save + /journal + /init. updated README with new cheat sheet and consolidation table.
 - 2026-03-20: slimmed commands from 25 to 19
